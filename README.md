@@ -4,7 +4,7 @@
 
 ---
 
-![Streamlit](https://img.shields.io/badge/Built%20with-Streamlit-f06) ![License](https://img.shields.io/badge/License-MIT-green) ![Made with ❤](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red) ![Made with Python](https://img.shields.io/badge/Made%20with-%E2%9D%A4-yellow)
+![Streamlit](https://img.shields.io/badge/Built%20with-Streamlit-f06) ![Python](https://img.shields.io/badge/Built%20with-Pyhton-yellow) ![License](https://img.shields.io/badge/License-MIT-green) ![Made with ❤](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red) 
 
 ## ✨ Overview
 
