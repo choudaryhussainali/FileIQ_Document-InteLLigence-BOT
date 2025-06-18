@@ -90,7 +90,9 @@ You can also enter the key in the sidebar at runtime, but exporting it avoids re
 ## 🖼️ Screenshots
 
 ![Capture](https://github.com/user-attachments/assets/53e79df7-a3ee-4fee-bd66-fc6258d6e5fa)
+---
 ![Capture2](https://github.com/user-attachments/assets/4e251582-9ba6-406b-a422-3e3c033fafc3)
+---
 ![Capture3](https://github.com/user-attachments/assets/61953d0f-e610-456d-a83a-41d72943fa58)
 ---
 
