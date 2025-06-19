@@ -55,7 +55,7 @@ Document Intelligence Bot lets you upload multiple documents (**PDF**, **DOCX*
 
 ```bash
 # 1️⃣ Clone
-$ git clone https://github.com/<your‑user>/document-intelligence-bot.git
+$ git clone https://github.com/choudaryhussainali/document-intelligence-bot.git
 $ cd document-intelligence-bot
 
 # 2️⃣ Install deps (Python ≥ 3.9)
