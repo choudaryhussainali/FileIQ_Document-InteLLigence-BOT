@@ -25,14 +25,14 @@ os.environ["PYTHONWARNINGS"] = "ignore"
 
 # Page configuration
 st.set_page_config(
-    page_title="Chat with Your Documents 📚",
+    page_title="fileIQ-Chat with Your Documents ",
     page_icon="📚",
     layout="wide",
 )
 
 # Sidebar with app information
 with st.sidebar:
-    st.title("Document Intelligence-Bot 🤖")
+    st.title("FileIQ - Document Intelligence-Bot 🤖")
     st.markdown("""
     Upload documents and chat with them using Llama model via Groq!
     
@@ -202,4 +202,5 @@ if st.session_state.document_processed:
             st.session_state.messages.append({"role": "assistant", "content": full_response})
 else:
     if not uploaded_files:
+
         st.info("👆 Please upload one or more documents to get started!")
