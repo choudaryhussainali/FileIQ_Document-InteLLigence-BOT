@@ -1,4 +1,4 @@
-# 📚 Document Intelligence Bot
+# FileIQ - Document Intelligence Bot 📚
 
 *Chat with your PDFs, Word docs, and text files—powered by Llama 3 on Groq, LangChain, and Streamlit.*
 
@@ -8,7 +8,7 @@
 
 ## ✨ Overview
 
-Document Intelligence Bot lets you upload multiple documents (**PDF**, **DOCX**, **TXT**) and query them conversationally. Under the hood it
+FileIQ lets you upload multiple documents (**PDF**, **DOCX**, **TXT**) and query them conversationally. Under the hood it
 
 * splits documents into semantic chunks, embeds them with `sentence‑transformers`,
 * stores them in a **FAISS** vector index,
@@ -55,7 +55,7 @@ Document Intelligence Bot lets you upload multiple documents (**PDF**, **DOCX*
 
 ```bash
 # 1️⃣ Clone
-$ git clone https://github.com/choudaryhussainali/document-intelligence-bot.git
+$ git clone https://github.com/choudaryhussainali/fileiq_document-intelligence-bot.git
 $ cd document-intelligence-bot
 
 # 2️⃣ Install deps (Python ≥ 3.9)
