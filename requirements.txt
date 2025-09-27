@@ -10,3 +10,4 @@ pdf2image
 PyPDF2
 langchain-groq
 docx2txt
+pypdf
