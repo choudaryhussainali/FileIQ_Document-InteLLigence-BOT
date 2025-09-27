@@ -6,6 +6,9 @@
 
 ![Streamlit](https://img.shields.io/badge/Built%20with-Streamlit-f06) ![Python](https://img.shields.io/badge/Built%20with-Pyhton-yellow) ![License](https://img.shields.io/badge/License-MIT-green) ![Made with ❤](https://img.shields.io/badge/Made%20with-%E2%9D%A4-red) 
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://file-iq.streamlit.app)
+
+
 ## ✨ Overview
 
 FileIQ lets you upload multiple documents (**PDF**, **DOCX**, **TXT**) and query them conversationally. Under the hood it
