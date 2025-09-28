@@ -7,6 +7,9 @@ try:
     from langchain_community.vectorstores import FAISS
     from langchain_text_splitters import RecursiveCharacterTextSplitter
     from langchain_community.document_loaders import PyPDFLoader, TextLoader, Docx2txtLoader
+    from langchain.schema import Document
+    from pdf2image import convert_from_path
+    import pytesseract
 except ImportError as e:
     st.error(f"""Error loading required packages: {str(e)}
     Please install the correct package versions using:
@@ -72,6 +75,26 @@ if "conversation" not in st.session_state:
 if "document_processed" not in st.session_state:
     st.session_state.document_processed = False
 
+# OCR-enabled PDF loader
+def load_pdf_with_ocr(file_path):
+    documents = []
+    try:
+        loader = PyPDFLoader(file_path)
+        documents = loader.load()
+    except:
+        documents = []
+    
+    if not documents:
+        try:
+            images = convert_from_path(file_path)
+            for i, image in enumerate(images):
+                text = pytesseract.image_to_string(image)
+                if text.strip():
+                    documents.append(Document(page_content=text, metadata={"source": file_path, "page": i+1}))
+        except Exception as e:
+            st.error(f"OCR failed for {os.path.basename(file_path)}: {str(e)}")
+    return documents
+
 def process_documents(uploaded_files):
     with tempfile.TemporaryDirectory() as temp_dir:
         file_paths = []
@@ -85,8 +108,7 @@ def process_documents(uploaded_files):
         for file_path in file_paths:
             try:
                 if file_path.endswith(".pdf"):
-                    loader = PyPDFLoader(file_path)
-                    documents.extend(loader.load())
+                    documents.extend(load_pdf_with_ocr(file_path))
                 elif file_path.endswith(".txt"):
                     loader = TextLoader(file_path)
                     documents.extend(loader.load())
