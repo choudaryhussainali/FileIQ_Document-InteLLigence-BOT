@@ -65,7 +65,7 @@ with st.sidebar:
         st.session_state.messages = []
         st.session_state.conversation = None
         st.session_state.document_processed = False
-        st.experimental_rerun()
+        st.rerun()
 
 # Initialize session state variables
 if "messages" not in st.session_state:
@@ -233,3 +233,4 @@ if st.session_state.document_processed:
 else:
     if not uploaded_files:
         st.info("👆 Please upload one or more documents to get started!")
+
