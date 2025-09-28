@@ -11,3 +11,5 @@ PyPDF2
 langchain-groq
 docx2txt
 pypdf
+pytesseract
+
