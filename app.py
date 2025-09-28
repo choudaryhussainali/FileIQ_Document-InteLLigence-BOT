@@ -20,7 +20,6 @@ import warnings
 
 # Suppress warnings
 warnings.filterwarnings("ignore")
-
 os.environ["PYTHONWARNINGS"] = "ignore"
 
 # Page configuration
@@ -106,6 +105,10 @@ def process_documents(uploaded_files):
             chunk_overlap=200
         )
         chunks = text_splitter.split_documents(documents)
+
+        if not chunks:
+            st.error("No readable text found in the uploaded documents.")
+            return None
         
         embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
@@ -169,7 +172,12 @@ if st.session_state.document_processed:
             message_placeholder = st.empty()
             full_response = ""
             
-            chat_history = [(m["content"], "") for m in st.session_state.messages[:-1] if m["role"] == "user"]
+            # FIX: build proper (user, assistant) pairs
+            chat_history = []
+            messages = st.session_state.messages
+            for i in range(len(messages) - 1):
+                if messages[i]["role"] == "user" and i + 1 < len(messages) and messages[i+1]["role"] == "assistant":
+                    chat_history.append((messages[i]["content"], messages[i+1]["content"]))
             
             try:
                 with st.spinner("Thinking..."):
@@ -202,5 +210,4 @@ if st.session_state.document_processed:
             st.session_state.messages.append({"role": "assistant", "content": full_response})
 else:
     if not uploaded_files:
-
         st.info("👆 Please upload one or more documents to get started!")
