@@ -5,21 +5,15 @@ from pathlib import Path
 from typing import List
 import time
 
-# LangChain imports
-from langchain.document_loaders import PyPDFLoader, TextLoader
+# LangChain imports - Updated for new structure
+from langchain_community.document_loaders import PyPDFLoader, TextLoader, Docx2txtLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import Chroma
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain_groq import ChatGroq
 from langchain_google_genai import ChatGoogleGenerativeAI
-
-# For DOCX files
-try:
-    from langchain.document_loaders import Docx2txtLoader
-except:
-    st.error("Please install docx2txt: pip install docx2txt")
 
 # Page configuration
 st.set_page_config(
