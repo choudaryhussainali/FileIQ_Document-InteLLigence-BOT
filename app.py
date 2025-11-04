@@ -181,19 +181,16 @@ with st.sidebar:
     # --- Actions ---
     st.markdown('<div class="glass-box">', unsafe_allow_html=True)
     st.markdown("### ⚙️ Quick Actions")
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("🗑️ Clear Chat", use_container_width=True):
-            st.session_state.messages = []
-            st.rerun()
-    with col2:
-        if st.button("📄 Reset Docs", use_container_width=True):
-            st.session_state.vectorstore = None
-            st.session_state.retriever = None
-            st.session_state.llm = None
-            st.session_state.processed_files = []
-            st.session_state.messages = []
-            st.rerun()
+    if st.button("🗑️ Clear Chat", use_container_width=True):
+        st.session_state.messages = []
+        st.rerun()
+    if st.button("📄 Reset Docs", use_container_width=True):
+        st.session_state.vectorstore = None
+        st.session_state.retriever = None
+        st.session_state.llm = None
+        st.session_state.processed_files = []
+        st.session_state.messages = []
+        st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
     
     # --- Export Chat ---
@@ -447,6 +444,7 @@ else:
         - What dates are mentioned?
         - List all names in the documents
         """)
+
 
 
 
