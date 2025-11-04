@@ -1,17 +1,28 @@
-torch
-transformers
-sentence-transformers
+# Streamlit app
+streamlit==1.39.0
+
+# LangChain ecosystem (stable, works with ConversationalRetrievalChain)
 langchain==0.0.352
-langchain-community==0.0.19
 langchain-core==0.1.14
-streamlit
-faiss-cpu
-python-docx
-pdf2image
-PyPDF2
+langchain-community==0.0.19
+langchain-text-splitters==0.0.2
 langchain-groq
+
+# Embeddings + Vector store
+faiss-cpu
+sentence-transformers
+
+# Document Loaders
+PyPDF2
+python-docx
 docx2txt
-pypdf
+
+# OCR + PDF conversion
 pytesseract
+pdf2image
 
-
+# Utility
+python-dotenv
+tqdm
+requests
+typing-extensions
