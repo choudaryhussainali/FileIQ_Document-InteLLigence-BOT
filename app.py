@@ -35,79 +35,116 @@ if "llm" not in st.session_state:
 if "processed_files" not in st.session_state:
     st.session_state.processed_files = []
 
-# Sidebar
+import streamlit as st
+
+# --- Sidebar Styling ---
+st.markdown("""
+<style>
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    color: #f1f5f9 !important;
+    padding: 1.2rem 1rem;
+}
+[data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
+    color: #f8fafc !important;
+    font-weight: 600;
+}
+.sidebar-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #38bdf8;
+    text-align: center;
+}
+.divider {
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    margin: 0.8rem 0;
+}
+.block {
+    background-color: rgba(255,255,255,0.05);
+    padding: 0.8rem 0.8rem;
+    border-radius: 0.6rem;
+    margin-bottom: 0.8rem;
+}
+small, .st-caption {
+    color: #94a3b8 !important;
+}
+.stButton button {
+    border-radius: 0.5rem;
+    background: #334155;
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+.stButton button:hover {
+    background: #2563eb;
+    color: white;
+}
+</style>
+""", unsafe_allow_html=True)
+
+# --- Sidebar Layout ---
 with st.sidebar:
-    st.title("🤖 Document Intelligence Bot")
+    st.markdown('<div class="sidebar-title">🤖 Document Intelligence Bot</div>', unsafe_allow_html=True)
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
     
-    st.markdown("---")
-    
-    # Instructions
-    with st.expander("📖 How to Use", expanded=True):
+    # --- How to Use ---
+    with st.expander("📘 How to Use", expanded=True):
         st.markdown("""
-        **Steps:**
-        1. Select your AI model
-        2. Enter API key
-        3. Upload documents (PDF, DOCX, TXT)
-        4. Click Process Documents
-        5. Ask questions!
-        
-        **Supported Formats:**
-        - 📄 PDF (.pdf)
-        - 📝 Word (.docx)
-        - 📃 Text (.txt)
+        **Steps to Begin**
+        1️⃣ Select an AI Model  
+        2️⃣ Enter your API key  
+        3️⃣ Upload documents (.pdf, .docx, .txt)  
+        4️⃣ Click **Process Documents**  
+        5️⃣ Ask any question from your files!  
+
+        **Supported Formats**
+        - 📄 PDF  
+        - 📝 Word  
+        - 📃 Text
         """)
     
-    st.markdown("---")
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
     
-    # Model selection
-    st.subheader("🧠 AI Model Selection")
-    
+    # --- Model Selection ---
+    st.markdown("### 🧠 AI Model Selection")
     model_option = st.selectbox(
         "Choose Model:",
         [
-            "Llama-3.2-3B (Groq) - Fast ⚡",
-            "Gemini 1.5 Flash - Free 🆓",
-            "Mixtral-8x7B (Groq) - Powerful 💪",
-            "Llama-3.1-8B (Groq) - Balanced ⚖️"
+            "Llama-3.2-3B (Groq) ⚡ Fast",
+            "Gemini 1.5 Flash 🆓 Free",
+            "Mixtral-8x7B (Groq) 💪 Powerful",
+            "Llama-3.1-8B (Groq) ⚖️ Balanced"
         ],
         index=0
     )
     
-    # API Key input
+    # --- API Key ---
     api_key = None
     if "Groq" in model_option:
-        api_key = st.text_input(
-            "Groq API Key:",
-            type="password",
-            help="Get free key at console.groq.com"
-        )
+        api_key = st.text_input("🔑 Groq API Key:", type="password", help="Get free key from console.groq.com")
         if not api_key:
             st.info("👆 Enter your Groq API key to continue")
     elif "Gemini" in model_option:
-        api_key = st.text_input(
-            "Gemini API Key:",
-            type="password",
-            help="Get free key at ai.google.dev"
-        )
+        api_key = st.text_input("🔑 Gemini API Key:", type="password", help="Get free key from ai.google.dev")
         if not api_key:
             st.info("👆 Enter your Gemini API key to continue")
     
-    st.markdown("---")
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
     
-    # Statistics
-    if st.session_state.vectorstore:
-        st.subheader("📊 Statistics")
-        st.metric("Documents Loaded", len(st.session_state.processed_files))
+    # --- Statistics ---
+    if st.session_state.get("vectorstore"):
+        st.markdown("### 📊 Document Stats")
+        st.metric("Documents Loaded", len(st.session_state.get("processed_files", [])))
     
-    st.markdown("---")
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
     
-    # Action buttons
+    # --- Actions ---
+    st.markdown("### ⚙️ Actions")
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🗑️ Clear Chat", use_container_width=True):
             st.session_state.messages = []
             st.rerun()
-    
     with col2:
         if st.button("📄 Reset Docs", use_container_width=True):
             st.session_state.vectorstore = None
@@ -117,23 +154,24 @@ with st.sidebar:
             st.session_state.messages = []
             st.rerun()
     
-    # Export chat
-    if st.session_state.messages:
-        st.markdown("---")
+    # --- Export Chat ---
+    if st.session_state.get("messages"):
+        st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
         chat_text = "\n\n".join([
-            f"{'USER' if msg['role'] == 'user' else 'ASSISTANT'}: {msg['content']}" 
+            f"{'USER' if msg['role'] == 'user' else 'ASSISTANT'}: {msg['content']}"
             for msg in st.session_state.messages
         ])
         st.download_button(
-            "💾 Export Chat",
+            "💾 Export Chat History",
             chat_text,
             file_name="chat_history.txt",
             mime="text/plain",
             use_container_width=True
         )
     
-    st.markdown("---")
-    st.caption("Built with Streamlit & LangChain")
+    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+    st.caption("✨ Built with Streamlit & LangChain | © 2025 Intelligent Systems Lab")
+
 
 # Main content
 st.title("📚 Chat with Your Documents")
@@ -364,5 +402,6 @@ else:
         - What dates are mentioned?
         - List all names in the documents
         """)
+
 
 
