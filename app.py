@@ -5,13 +5,15 @@ from pathlib import Path
 from typing import List
 import time
 
-# LangChain imports - CORRECTED for latest version
+# LangChain imports - FULLY CORRECTED for 2024+
 from langchain_community.document_loaders import PyPDFLoader, TextLoader, Docx2txtLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
-from langchain.chains import ConversationalRetrievalChain
-from langchain.memory import ConversationBufferMemory
+from langchain.chains import create_history_aware_retriever, create_retrieval_chain
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.messages import HumanMessage, AIMessage
 from langchain_groq import ChatGroq
 from langchain_google_genai import ChatGoogleGenerativeAI
 
@@ -40,6 +42,8 @@ st.markdown("""
 # Initialize session state
 if "messages" not in st.session_state:
     st.session_state.messages = []
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
 if "qa_chain" not in st.session_state:
     st.session_state.qa_chain = None
 if "vectorstore" not in st.session_state:
@@ -86,7 +90,7 @@ with st.sidebar:
             "Llama-3.2-3B (Groq) - Fast ⚡",
             "Gemini 1.5 Flash - Free 🆓",
             "Mixtral-8x7B (Groq) - Powerful 💪",
-            "Mistral-7B (Groq) - Balanced ⚖️"
+            "Llama-3.1-8B (Groq) - Balanced ⚖️"
         ],
         index=0
     )
@@ -129,6 +133,7 @@ with st.sidebar:
     with col1:
         if st.button("🗑️ Clear Chat", use_container_width=True):
             st.session_state.messages = []
+            st.session_state.chat_history = []
             st.rerun()
     
     with col2:
@@ -137,6 +142,7 @@ with st.sidebar:
             st.session_state.vectorstore = None
             st.session_state.processed_files = []
             st.session_state.messages = []
+            st.session_state.chat_history = []
             st.rerun()
     
     # Export chat
@@ -218,15 +224,63 @@ def initialize_llm(model_option, api_key):
                 temperature=0.7,
                 groq_api_key=api_key
             )
-        elif "Mistral-7B" in model_option:
+        elif "Llama-3.1-8B" in model_option:
             return ChatGroq(
-                model="mistral-7b-instruct-v0.1",
+                model="llama-3.1-8b-instant",
                 temperature=0.7,
                 groq_api_key=api_key
             )
     except Exception as e:
         st.error(f"Error initializing model: {str(e)}")
         return None
+
+# Function to create conversational chain (Modern approach)
+def create_conversational_chain(llm, retriever):
+    """Create a modern conversational retrieval chain"""
+    
+    # Contextualize question prompt
+    contextualize_q_system_prompt = (
+        "Given a chat history and the latest user question "
+        "which might reference context in the chat history, "
+        "formulate a standalone question which can be understood "
+        "without the chat history. Do NOT answer the question, "
+        "just reformulate it if needed and otherwise return it as is."
+    )
+    
+    contextualize_q_prompt = ChatPromptTemplate.from_messages([
+        ("system", contextualize_q_system_prompt),
+        MessagesPlaceholder("chat_history"),
+        ("human", "{input}"),
+    ])
+    
+    # Create history-aware retriever
+    history_aware_retriever = create_history_aware_retriever(
+        llm, retriever, contextualize_q_prompt
+    )
+    
+    # Answer question prompt
+    qa_system_prompt = (
+        "You are an assistant for question-answering tasks. "
+        "Use the following pieces of retrieved context to answer "
+        "the question. If you don't know the answer, say that you "
+        "don't know. Use three sentences maximum and keep the "
+        "answer concise.\n\n"
+        "{context}"
+    )
+    
+    qa_prompt = ChatPromptTemplate.from_messages([
+        ("system", qa_system_prompt),
+        MessagesPlaceholder("chat_history"),
+        ("human", "{input}"),
+    ])
+    
+    # Create question-answer chain
+    question_answer_chain = create_stuff_documents_chain(llm, qa_prompt)
+    
+    # Create retrieval chain
+    rag_chain = create_retrieval_chain(history_aware_retriever, question_answer_chain)
+    
+    return rag_chain
 
 # File upload section
 st.subheader("📤 Upload Your Documents")
@@ -291,19 +345,9 @@ if uploaded_files and api_key:
                     st.error("Failed to initialize the AI model. Please check your API key.")
                     st.stop()
                 
-                # Create QA chain
-                memory = ConversationBufferMemory(
-                    memory_key="chat_history",
-                    return_messages=True,
-                    output_key="answer"
-                )
-                
-                qa_chain = ConversationalRetrievalChain.from_llm(
-                    llm=llm,
-                    retriever=vectorstore.as_retriever(search_kwargs={"k": 3}),
-                    memory=memory,
-                    return_source_documents=True
-                )
+                # Create conversational chain
+                retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+                qa_chain = create_conversational_chain(llm, retriever)
                 
                 # Save to session state
                 st.session_state.qa_chain = qa_chain
@@ -354,12 +398,23 @@ if st.session_state.qa_chain:
         with st.chat_message("assistant"):
             with st.spinner("Thinking..."):
                 try:
-                    response = st.session_state.qa_chain({"question": prompt})
+                    # Invoke the chain with chat history
+                    response = st.session_state.qa_chain.invoke({
+                        "input": prompt,
+                        "chat_history": st.session_state.chat_history
+                    })
+                    
                     answer = response["answer"]
-                    source_docs = response.get("source_documents", [])
+                    source_docs = response.get("context", [])
                     
                     # Display answer
                     st.markdown(answer)
+                    
+                    # Update chat history
+                    st.session_state.chat_history.extend([
+                        HumanMessage(content=prompt),
+                        AIMessage(content=answer)
+                    ])
                     
                     # Prepare source information
                     source_info = []
