@@ -22,15 +22,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS
-st.markdown("""
-    <style>
-    .stApp {
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-    </style>
-""", unsafe_allow_html=True)
 
 # Initialize session state
 if "messages" not in st.session_state:
@@ -373,3 +364,4 @@ else:
         - What dates are mentioned?
         - List all names in the documents
         """)
+
