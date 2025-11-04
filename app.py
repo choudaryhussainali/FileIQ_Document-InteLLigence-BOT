@@ -162,9 +162,9 @@ with st.sidebar:
     api_key = None
     st.markdown('<div class="glass-box">', unsafe_allow_html=True)
     if "Groq" in model_option:
-        api_key = st.text_input("🔑 Groq API Key", type="password", help="Get your key at console.groq.com")
+        api_key = st.text_input("🔑 API Key", type="password", help="Get your key at console.groq.com")
         if not api_key:
-            st.info("👆 Enter your Groq API key to continue")
+            st.info("👆 Enter your API key to continue")
     elif "Gemini" in model_option:
         api_key = st.text_input("🔑 Gemini API Key", type="password", help="Get your key at ai.google.dev")
         if not api_key:
@@ -214,7 +214,7 @@ with st.sidebar:
 
     # Footer
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-    st.caption("⚡ Powered by LangChain & Streamlit | Designed with ❤️ by Hussain Ali")
+    st.caption("Designed with ❤️ by CH Hussain Ali")
 
 
 
@@ -447,6 +447,7 @@ else:
         - What dates are mentioned?
         - List all names in the documents
         """)
+
 
 
 
