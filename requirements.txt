@@ -1,8 +1,9 @@
 torch
 transformers
 sentence-transformers
-langchain
-langchain-community
+langchain==0.0.352
+langchain-community==0.0.19
+langchain-core==0.1.14
 streamlit
 faiss-cpu
 python-docx
@@ -12,4 +13,5 @@ langchain-groq
 docx2txt
 pypdf
 pytesseract
+
 
