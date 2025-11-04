@@ -175,7 +175,7 @@ def initialize_llm(model_option, api_key):
     """Initialize the selected LLM"""
     try:
         if "Llama-3.2-3B" in model_option:
-            return ChatGroq(model="llama-3.2-3b-preview", temperature=0.7, groq_api_key=api_key)
+            return ChatGroq(model="llama-3.1-8b-instant", temperature=0.7, groq_api_key=api_key)
         elif "Gemini" in model_option:
             return ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=api_key, temperature=0.7)
         elif "Mixtral-8x7B" in model_option:
@@ -364,4 +364,5 @@ else:
         - What dates are mentioned?
         - List all names in the documents
         """)
+
 
