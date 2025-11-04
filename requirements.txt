@@ -1,28 +1,11 @@
-# Streamlit app
-streamlit==1.39.0
-
-# LangChain ecosystem (stable, works with ConversationalRetrievalChain)
-langchain==0.0.352
-langchain-core==0.1.14
-langchain-community==0.0.19
-langchain-text-splitters==0.0.2
+streamlit
+langchain
+langchain-core
+langchain-community
 langchain-groq
-
-# Embeddings + Vector store
-faiss-cpu
+chromadb
 sentence-transformers
-
-# Document Loaders
-PyPDF2
 python-docx
 docx2txt
-
-# OCR + PDF conversion
-pytesseract
-pdf2image
-
-# Utility
 python-dotenv
-tqdm
 requests
-typing-extensions
