@@ -38,51 +38,89 @@ if "processed_files" not in st.session_state:
 import streamlit as st
 
 # --- Sidebar Styling ---
+import streamlit as st
+
+# ---- ULTRA MODERN SIDEBAR STYLING ----
 st.markdown("""
 <style>
+/* Sidebar Background */
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+    background: linear-gradient(160deg, #0f172a 0%, #1e293b 45%, #020617 100%);
     color: #f1f5f9 !important;
-    padding: 1.2rem 1rem;
+    padding: 1.4rem 1rem;
+    border-right: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 4px 0 20px rgba(0,0,0,0.3);
 }
-[data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3 {
-    color: #f8fafc !important;
-    font-weight: 600;
-}
+
+/* Title */
 .sidebar-title {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #38bdf8;
+    font-size: 1.6rem;
+    font-weight: 800;
+    background: linear-gradient(90deg, #38bdf8, #818cf8, #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     text-align: center;
+    letter-spacing: 1px;
 }
+
+/* Glowing Divider */
 .divider {
-    border-bottom: 1px solid rgba(255,255,255,0.2);
-    margin: 0.8rem 0;
+    height: 1px;
+    margin: 1rem 0;
+    background: linear-gradient(90deg, rgba(56,189,248,0) 0%, rgba(56,189,248,0.7) 50%, rgba(56,189,248,0) 100%);
 }
-.block {
-    background-color: rgba(255,255,255,0.05);
-    padding: 0.8rem 0.8rem;
-    border-radius: 0.6rem;
-    margin-bottom: 0.8rem;
-}
-small, .st-caption {
-    color: #94a3b8 !important;
-}
-.stButton button {
-    border-radius: 0.5rem;
-    background: #334155;
-    color: white;
-    border: none;
+
+/* Section Box */
+.glass-box {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     transition: all 0.3s ease;
 }
+.glass-box:hover {
+    background: rgba(255,255,255,0.07);
+}
+
+/* Dropdown & Inputs */
+.stSelectbox, .stTextInput {
+    border-radius: 8px !important;
+}
+
+/* Buttons */
+.stButton button {
+    border-radius: 10px;
+    background: linear-gradient(90deg, #2563eb, #9333ea);
+    color: #fff;
+    border: none;
+    box-shadow: 0 0 12px rgba(147,51,234,0.4);
+    transition: all 0.3s ease-in-out;
+}
 .stButton button:hover {
-    background: #2563eb;
-    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 0 18px rgba(147,51,234,0.7);
+    background: linear-gradient(90deg, #1d4ed8, #7e22ce);
+}
+
+/* Metrics */
+[data-testid="stMetricValue"] {
+    color: #38bdf8 !important;
+    font-weight: 700 !important;
+}
+
+/* Caption */
+.stCaption {
+    color: #94a3b8 !important;
+    text-align: center;
+    font-size: 0.8rem !important;
+    margin-top: 1.5rem;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# --- Sidebar Layout ---
+# ---- SIDEBAR CONTENT ----
 with st.sidebar:
     st.markdown('<div class="sidebar-title">🤖 Document Intelligence Bot</div>', unsafe_allow_html=True)
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
@@ -90,56 +128,59 @@ with st.sidebar:
     # --- How to Use ---
     with st.expander("📘 How to Use", expanded=True):
         st.markdown("""
-        **Steps to Begin**
+        **Quick Start Guide**
         1️⃣ Select an AI Model  
-        2️⃣ Enter your API key  
-        3️⃣ Upload documents (.pdf, .docx, .txt)  
+        2️⃣ Enter your API Key  
+        3️⃣ Upload PDF / DOCX / TXT  
         4️⃣ Click **Process Documents**  
-        5️⃣ Ask any question from your files!  
+        5️⃣ Ask your questions! 💬  
 
         **Supported Formats**
         - 📄 PDF  
         - 📝 Word  
         - 📃 Text
         """)
-    
+
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
     
     # --- Model Selection ---
-    st.markdown("### 🧠 AI Model Selection")
+    st.markdown('<div class="glass-box">', unsafe_allow_html=True)
+    st.markdown("### 🧠 Model Selection")
     model_option = st.selectbox(
-        "Choose Model:",
+        "Choose AI Model:",
         [
-            "Llama-3.2-3B (Groq) ⚡ Fast",
-            "Gemini 1.5 Flash 🆓 Free",
-            "Mixtral-8x7B (Groq) 💪 Powerful",
-            "Llama-3.1-8B (Groq) ⚖️ Balanced"
+            "⚡ Llama-3.2-3B (Groq) — Fast",
+            "🆓 Gemini 1.5 Flash — Free",
+            "💪 Mixtral-8x7B (Groq) — Powerful",
+            "⚖️ Llama-3.1-8B (Groq) — Balanced"
         ],
         index=0
     )
-    
+    st.markdown('</div>', unsafe_allow_html=True)
+
     # --- API Key ---
     api_key = None
+    st.markdown('<div class="glass-box">', unsafe_allow_html=True)
     if "Groq" in model_option:
-        api_key = st.text_input("🔑 Groq API Key:", type="password", help="Get free key from console.groq.com")
+        api_key = st.text_input("🔑 Groq API Key", type="password", help="Get your key at console.groq.com")
         if not api_key:
             st.info("👆 Enter your Groq API key to continue")
     elif "Gemini" in model_option:
-        api_key = st.text_input("🔑 Gemini API Key:", type="password", help="Get free key from ai.google.dev")
+        api_key = st.text_input("🔑 Gemini API Key", type="password", help="Get your key at ai.google.dev")
         if not api_key:
             st.info("👆 Enter your Gemini API key to continue")
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-    
-    # --- Statistics ---
+    # --- Stats ---
     if st.session_state.get("vectorstore"):
+        st.markdown('<div class="glass-box">', unsafe_allow_html=True)
         st.markdown("### 📊 Document Stats")
         st.metric("Documents Loaded", len(st.session_state.get("processed_files", [])))
-    
-    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # --- Actions ---
-    st.markdown("### ⚙️ Actions")
+    st.markdown('<div class="glass-box">', unsafe_allow_html=True)
+    st.markdown("### ⚙️ Quick Actions")
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🗑️ Clear Chat", use_container_width=True):
@@ -153,10 +194,11 @@ with st.sidebar:
             st.session_state.processed_files = []
             st.session_state.messages = []
             st.rerun()
+    st.markdown('</div>', unsafe_allow_html=True)
     
     # --- Export Chat ---
     if st.session_state.get("messages"):
-        st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+        st.markdown('<div class="glass-box">', unsafe_allow_html=True)
         chat_text = "\n\n".join([
             f"{'USER' if msg['role'] == 'user' else 'ASSISTANT'}: {msg['content']}"
             for msg in st.session_state.messages
@@ -168,9 +210,12 @@ with st.sidebar:
             mime="text/plain",
             use_container_width=True
         )
-    
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # Footer
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-    st.caption("✨ Built with Streamlit & LangChain | © 2025 Intelligent Systems Lab")
+    st.caption("⚡ Powered by LangChain & Streamlit | Designed with ❤️ by Hussain Ali")
+
 
 
 # Main content
@@ -402,6 +447,7 @@ else:
         - What dates are mentioned?
         - List all names in the documents
         """)
+
 
 
 
