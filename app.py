@@ -126,7 +126,7 @@ with st.sidebar:
     st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
     
     # --- How to Use ---
-    with st.expander("📘 How to Use", expanded=True):
+    with st.expander("📘 How to Use", expanded=False):
         st.markdown("""
         **Quick Start Guide**
         1️⃣ Select an AI Model  
@@ -444,6 +444,7 @@ else:
         - What dates are mentioned?
         - List all names in the documents
         """)
+
 
 
 
